@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#F2F2F7">
+<title>MDS Motion · Admin</title>
+<style>
+:root{--primary:#102B59;--secondary:#2463C7;--bg:#F2F2F7;--card:#FFFFFF;--text:#0B1220;--muted:#6B7280;--sep:#E5E7EB;--danger:#D92D20;--ok:#16A34A;--r:14px}
+[data-theme="dark"]{--bg:#0B1220;--card:#162033;--text:#F3F6FB;--muted:#9AA6BC;--sep:#23304A}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--text);font-size:17px;line-height:1.4;-webkit-font-smoothing:antialiased}
+button,input,select{font:inherit}
+.wrap{max-width:560px;margin:0 auto;padding:0 16px 40px}
+header.top{position:sticky;top:0;z-index:5;background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);padding:calc(14px + env(safe-area-inset-top,0px)) 16px 12px;border-bottom:1px solid var(--sep)}
+header.top h1{margin:0;font-size:28px;font-weight:700;letter-spacing:-.02em}
+.sub{color:var(--muted);font-size:14px;margin-top:2px}
+.section-title{font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);margin:24px 16px 8px}
+.group{background:var(--card);border-radius:var(--r);overflow:hidden;box-shadow:0 1px 2px rgba(0,0,0,.04);border:1px solid var(--sep)}
+.row{display:flex;align-items:center;gap:14px;padding:14px 16px;min-height:56px;border-bottom:1px solid var(--sep);width:100%;background:none;border-left:0;border-right:0;border-top:0;text-align:left;color:var(--text);cursor:pointer;transition:background .15s}
+.row:last-child{border-bottom:0}
+.row:hover{background:color-mix(in srgb,var(--sep) 35%,transparent)}
+.row:active{background:var(--sep)}
+.row:disabled{opacity:.45;cursor:not-allowed}
+.ico{width:32px;height:32px;border-radius:9px;display:grid;place-items:center;flex:none;color:#fff}
+.ico svg{width:18px;height:18px}
+.grow{flex:1;min-width:0}
+.label{font-weight:500}
+.hint{color:var(--muted);font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.chev{color:var(--muted);width:18px;height:18px;flex:none}
+.danger-text{color:var(--danger)}
+.field{padding:14px 16px;border-bottom:1px solid var(--sep)}
+.field:last-child{border-bottom:0}
+.field label{display:block;font-size:14px;color:var(--muted);margin-bottom:6px;font-weight:500}
+.input{width:100%;min-height:48px;padding:12px 14px;border:1px solid var(--sep);border-radius:12px;background:var(--bg);color:var(--text);font-size:17px}
+.input:focus{outline:none;border-color:var(--secondary);box-shadow:0 0 0 4px color-mix(in srgb,var(--secondary) 20%,transparent)}
+.color-row{display:flex;align-items:center;gap:12px}
+.swatch{width:44px;height:44px;border-radius:12px;border:1px solid var(--sep);padding:0;background:none;cursor:pointer;flex:none}
+.seg{display:flex;background:var(--bg);border-radius:10px;padding:3px;gap:3px}
+.seg button{flex:1;min-height:40px;border:0;border-radius:8px;background:transparent;color:var(--text);cursor:pointer;font-weight:500}
+.seg button.on{background:var(--card);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.preview{margin:14px 16px;border-radius:var(--r);overflow:hidden;border:1px solid var(--sep)}
+.preview .bar{padding:14px 16px;color:#fff;display:flex;justify-content:space-between;align-items:center;font-weight:600}
+.preview .body{padding:14px 16px;background:var(--card);font-size:15px}
+.pbtn{display:inline-block;margin-top:10px;color:#fff;padding:9px 14px;border-radius:10px;font-weight:600;font-size:15px}
+.actions{display:flex;gap:10px;padding:16px;position:sticky;bottom:0;background:var(--bg)}
+.btn{flex:1;min-height:50px;border:0;border-radius:var(--r);font-weight:600;font-size:17px;cursor:pointer;transition:transform .1s,opacity .15s}
+.btn:active{transform:scale(.98)}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.btn.primary{background:var(--secondary);color:#fff}
+.btn.cancel{background:var(--card);color:var(--text);border:1px solid var(--sep)}
+.btn.destructive{background:var(--danger);color:#fff}
+.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translate(-50%,20px);opacity:0;background:var(--text);color:var(--bg);padding:12px 18px;border-radius:12px;font-weight:500;transition:.25s;pointer-events:none;z-index:20}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+.sheet-bg{position:fixed;inset:0;background:rgba(0,0,0,.35);display:flex;align-items:flex-end;justify-content:center;z-index:30;padding:0}
+.sheet{background:var(--card);width:100%;max-width:560px;border-radius:20px 20px 0 0;padding:20px 20px calc(20px + env(safe-area-inset-bottom,0px));animation:up .2s ease-out}
+@keyframes up{from{transform:translateY(30px);opacity:0}to{transform:none;opacity:1}}
+.sheet h2{margin:0 0 6px;font-size:20px}
+.sheet p{color:var(--muted);margin:0 0 18px}
+.sheet .btns{display:flex;flex-direction:column;gap:10px}
+.empty{padding:24px;text-align:center;color:var(--muted)}
+.back{display:inline-flex;align-items:center;gap:4px;color:var(--secondary);background:none;border:0;font-size:17px;padding:6px 0;cursor:pointer}
+.detail-row{display:flex;justify-content:space-between;gap:12px;padding:14px 16px;border-bottom:1px solid var(--sep)}
+.detail-row:last-child{border-bottom:0}
+.detail-row span:last-child{text-align:right;color:var(--muted);word-break:break-word}
+.badge{display:inline-block;font-size:12px;padding:3px 9px;border-radius:99px;background:var(--bg);color:var(--muted)}
+:focus-visible{outline:3px solid color-mix(in srgb,var(--secondary) 60%,transparent);outline-offset:2px}
+</style>
+</head>
+<body>
+<header class="top"><h1>Admin</h1><div class="sub" id="subtitle">Owner settings</div></header>
+<main class="wrap" id="app"></main>
+<div class="toast" id="toast"></div>
+
+<script>
+// Demo data only. This admin file has its OWN in-memory copy; it does not share state with index.html yet.
+const S = {
+  profile:{ name:"Madhav", role:"Owner · Freelance video editor", email:"madhav@example.com" },
+  app:{ name:"MDS Motion", logo:"MDS", primary:"#102B59", secondary:"#2463C7", background:"#F2F2F7", theme:"light", welcome:"Welcome back, Madhav", navStyle:"sidebar" },
+  leads:[
+    { id:"lead_001", name:"Aarav Mehta", category:"Travel vlogs", status:"Interested", history:3, media:2 },
+    { id:"lead_002", name:"Priya Sharma", category:"Food & recipes", status:"Contacted", history:1, media:0 },
+    { id:"lead_003", name:"Rohan Kapoor", category:"Fitness", status:"New Lead", history:0, media:0 }
+  ]
+};
+let view = { page:"home", leadId:null };
+let draft = null;
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+
+// Lucide-style inline icons
+const I = {
+  app:'<path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h6v6h-6z"/>',
+  palette:'<circle cx="13.5" cy="6.5" r=".5"/><circle cx="17.5" cy="10.5" r=".5"/><circle cx="8.5" cy="7.5" r=".5"/><circle cx="6.5" cy="12.5" r=".5"/><path d="M12 2a10 10 0 1 0 0 20c1.1 0 2-.9 2-2 0-.5-.2-1-.5-1.3-.3-.3-.5-.7-.5-1.2 0-1.1.9-2 2-2h2.4c2.2 0 4-1.8 4-4 0-4.8-4.5-8.5-10-8.5z"/>',
+  db:'<ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v6c0 1.7 3.6 3 8 3s8-1.3 8-3V5"/><path d="M4 11v6c0 1.7 3.6 3 8 3s8-1.3 8-3v-6"/>',
+  user:'<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7"/>',
+  trash:'<path d="M3 6h18M8 6V4h8v2M6 6l1 15h10l1-15"/>',
+  file:'<path d="M14 3H6v18h12V7z"/><path d="M14 3v4h4"/>',
+  history:'<path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5M12 7v5l3 2"/>',
+  users:'<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6"/><path d="M16 4.5a3.5 3.5 0 0 1 0 7M21.5 20c0-2.6-1.6-4.6-4-5.5"/>',
+  nav:'<path d="M4 6h16M4 12h16M4 18h10"/>',
+  eye:'<path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>',
+  sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>',
+  chev:'<path d="M9 6l6 6-6 6"/>',
+  back:'<path d="M15 6l-6 6 6 6"/>',
+  warn:'<path d="M12 3l10 18H2z"/><path d="M12 10v5M12 18h.01"/>'
+};
+const svg = (name, cls="") => `<svg class="${cls}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${I[name]}</svg>`;
+const tile = (name, color) => `<span class="ico" style="background:${color}">${svg(name)}</span>`;
+
+function toast(msg){ const t=$("#toast"); t.textContent=msg; t.classList.add("show"); clearTimeout(window._t); window._t=setTimeout(()=>t.classList.remove("show"),2200); }
+
+// ---------- Screens ----------
+function home(){
+  return `
+  <div class="section-title">App Appearance</div>
+  <div class="group">
+    <button class="row" onclick="go('appearance')">${tile("palette","#2463C7")}<span class="grow"><div class="label">Appearance</div><div class="hint">Name, colors, theme, welcome text</div></span>${svg("chev","chev")}</button>
+  </div>
+  <div class="section-title">Data Management</div>
+  <div class="group">
+    <button class="row" onclick="go('leads')">${tile("users","#16A34A")}<span class="grow"><div class="label">View Leads</div><div class="hint">${S.leads.length} saved leads</div></span>${svg("chev","chev")}</button>
+    <button class="row" onclick="confirmAction('Clear all demo data?','This removes all demo leads, histories and media from this admin view. It cannot be undone.','Clear demo data',clearDemo)">${tile("db","#D92D20")}<span class="grow"><div class="label danger-text">Clear Demo Data</div><div class="hint">Removes all demo records</div></span></button>
+  </div>
+  <div class="section-title">Admin</div>
+  <div class="group">
+    <button class="row" onclick="go('profile')">${tile("user","#102B59")}<span class="grow"><div class="label">Admin Profile</div><div class="hint">${esc(S.profile.name)} · ${esc(S.profile.role)}</div></span>${svg("chev","chev")}</button>
+  </div>
+  <p class="sub" style="text-align:center;margin-top:24px">Owner-only area. Real login and server checks are needed before production.</p>`;
+}
+
+function appearance(){
+  const d = draft || {...S.app};
+  draft = d;
+  return `
+  <button class="back" onclick="go('home')">${svg("back")} Admin</button>
+  <div class="section-title">Live Preview</div>
+  <div class="preview" id="pv">
+    <div class="bar" style="background:${d.primary}"><span>${esc(d.logo)} · ${esc(d.name)}</span><span>${svg("eye")}</span></div>
+    <div class="body" style="background:${d.background};color:${d.theme==='dark'?'#F3F6FB':'#0B1220'}">
+      <div style="font-weight:600">${esc(d.welcome)}</div>
+      <span class="pbtn" style="background:${d.secondary}">Primary action</span>
+    </div>
+  </div>
+  <div class="section-title">Identity</div>
+  <div class="group">
+    <div class="field"><label for="f-name">Application name</label><input class="input" id="f-name" value="${esc(d.name)}" oninput="edit('name',this.value)"></div>
+    <div class="field"><label for="f-logo">Logo text (or upload later)</label><input class="input" id="f-logo" maxlength="4" value="${esc(d.logo)}" oninput="edit('logo',this.value)"></div>
+    <div class="field"><label for="f-welcome">Welcome text</label><input class="input" id="f-welcome" value="${esc(d.welcome)}" oninput="edit('welcome',this.value)"></div>
+  </div>
+  <div class="section-title">Colors</div>
+  <div class="group">
+    ${colorField("primary","Primary color",d.primary)}
+    ${colorField("secondary","Secondary color",d.secondary)}
+    ${colorField("background","Background",d.background)}
+  </div>
+  <div class="section-title">Appearance</div>
+  <div class="group">
+    <div class="field"><label>Theme</label>
+      <div class="seg"><button class="${d.theme==='light'?'on':''}" onclick="edit('theme','light')">Light</button><button class="${d.theme==='dark'?'on':''}" onclick="edit('theme','dark')">Dark</button></div></div>
+    <div class="field"><label>Navigation style</label>
+      <div class="seg"><button class="${d.navStyle==='sidebar'?'on':''}" onclick="edit('navStyle','sidebar')">Sidebar</button><button class="${d.navStyle==='drawer'?'on':''}" onclick="edit('navStyle','drawer')">Drawer</button></div></div>
+  </div>
+  <div class="actions">
+    <button class="btn cancel" onclick="cancelAppearance()">Cancel</button>
+    <button class="btn primary" onclick="saveAppearance()">Save</button>
+  </div>`;
+}
+function colorField(key,label,val){
+  return `<div class="field"><label for="c-${key}">${label}</label><div class="color-row"><input type="color" class="swatch" id="c-${key}" value="${val}" oninput="edit('${key}',this.value)"><input class="input" value="${val}" aria-label="${label} hex" oninput="if(/^#[0-9a-f]{6}$/i.test(this.value))edit('${key}',this.value)"></div></div>`;
+}
+function edit(k,v){ draft[k]=v; const pv=$("#pv"); if(!pv) return; go('appearance',true); }
+function saveAppearance(){ S.app={...draft}; draft=null; toast("Appearance saved"); go('home'); }
+function cancelAppearance(){ draft=null; go('home'); }
+
+function leads(){
+  return `
+  <button class="back" onclick="go('home')">${svg("back")} Admin</button>
+  <div class="section-title">Saved Leads</div>
+  <div class="group">${S.leads.map(l=>`
+    <button class="row" onclick="openLead('${l.id}')">${tile("users","#2463C7")}<span class="grow"><div class="label">${esc(l.name)}</div><div class="hint">${esc(l.category)} · ${esc(l.status)}</div></span>${svg("chev","chev")}</button>`).join("") || `<div class="empty">No leads</div>`}
+  </div>`;
+}
+
+function lead(){
+  const l = S.leads.find(x=>x.id===view.leadId);
+  if(!l) return `<div class="empty">Lead not found</div><button class="back" onclick="go('leads')">${svg("back")} Leads</button>`;
+  return `
+  <button class="back" onclick="go('leads')">${svg("back")} Leads</button>
+  <div class="section-title">Record</div>
+  <div class="group">
+    <div class="detail-row"><span>Name</span><span>${esc(l.name)}</span></div>
+    <div class="detail-row"><span>Category</span><span>${esc(l.category)}</span></div>
+    <div class="detail-row"><span>Status</span><span>${esc(l.status)}</span></div>
+    <div class="detail-row"><span>Lead ID</span><span>${esc(l.id)}</span></div>
+    <div class="detail-row"><span>Conversation messages</span><span>${l.history}</span></div>
+    <div class="detail-row"><span>Uploaded media</span><span>${l.media}</span></div>
+  </div>
+  <div class="section-title">Actions</div>
+  <div class="group">
+    <button class="row" onclick="confirmAction('Delete conversation history?','All ${l.history} messages for ${esc(l.name)} will be removed.','Delete history',()=>{l.history=0;toast('History deleted')})">${tile("history","#B54708")}<span class="grow"><div class="label danger-text">Delete Conversation History</div></span></button>
+    <button class="row" onclick="confirmAction('Delete uploaded media?','${l.media} file(s) for ${esc(l.name)} will be removed.','Delete media',()=>{l.media=0;toast('Media deleted')})">${tile("file","#B54708")}<span class="grow"><div class="label danger-text">Delete Uploaded Media</div></span></button>
+    <button class="row" onclick="confirmAction('Delete this lead?','${esc(l.name)} and all related data will be permanently removed from this view.','Delete lead',()=>{S.leads=S.leads.filter(x=>x.id!=='${l.id}');toast('Lead deleted');go('leads')})">${tile("trash","#D92D20")}<span class="grow"><div class="label danger-text">Delete Lead</div></span></button>
+  </div>`;
+}
+
+function profile(){
+  return `
+  <button class="back" onclick="go('home')">${svg("back")} Admin</button>
+  <div class="section-title">Admin Profile</div>
+  <div class="group">
+    <div class="detail-row"><span>Name</span><span>${esc(S.profile.name)}</span></div>
+    <div class="detail-row"><span>Role</span><span>${esc(S.profile.role)}</span></div>
+    <div class="detail-row"><span>Email</span><span>${esc(S.profile.email)}</span></div>
+  </div>
+  <p class="sub" style="margin:14px 16px">Profile editing will be enabled once authentication is added.</p>`;
+}
+
+// ---------- Confirmation ----------
+function confirmAction(title,msg,label,fn){
+  const bg=document.createElement("div"); bg.className="sheet-bg";
+  bg.innerHTML=`<div class="sheet" role="dialog" aria-modal="true">
+    <div style="color:var(--danger);margin-bottom:10px">${svg("warn")}</div>
+    <h2>${esc(title)}</h2><p>${msg}</p>
+    <div class="btns">
+      <button class="btn destructive" id="ok">${esc(label)}</button>
+      <button class="btn cancel" id="no">Cancel</button>
+    </div></div>`;
+  document.body.appendChild(bg);
+  const close=()=>bg.remove();
+  bg.addEventListener("click",e=>{ if(e.target===bg) close(); });
+  bg.querySelector("#no").onclick=close;
+  bg.querySelector("#ok").onclick=()=>{ close(); fn(); render(); };
+  bg.querySelector("#no").focus();
+}
+function clearDemo(){ S.leads=[]; toast("Demo data cleared"); go('home'); }
+
+// ---------- Router ----------
+function go(page,keepDraft){ view.page=page; if(page!=='appearance'&&!keepDraft) draft=null; render(); window.scrollTo(0,0); }
+function openLead(id){ view.leadId=id; go('lead'); }
+function render(){
+  const pages={home,appearance,leads,lead,profile};
+  $("#app").innerHTML = pages[view.page]();
+  $("#subtitle").textContent = view.page==="home" ? S.app.name+" · Owner settings" : "";
+}
+render();
+</script>
+</body>
+</html>
